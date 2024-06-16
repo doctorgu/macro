@@ -13,11 +13,16 @@ def get_location(img_full_path: str, conf=0.9) -> pyautogui.Point | None:
         return None
 
 
-def click_img(img_full_path, conf=0.9):
-    """click image"""
-    location = get_location(img_full_path, conf)
-    if not location:
-        return False
-    x, y = location
-    pyautogui.click(x, y)
-    return True
+def click_imgs(img_full_paths: list[str], conf=0.9) -> bool:
+    """click images"""
+
+    for img_full_path in img_full_paths:
+        location = get_location(img_full_path, conf)
+        if not location:
+            continue
+
+        x, y = location
+        pyautogui.click(x, y)
+        return True
+
+    return False

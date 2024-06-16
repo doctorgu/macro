@@ -3,7 +3,7 @@
 import pyautogui
 import time
 
-from util import click_img
+from util import click_imgs
 
 
 def main():
@@ -17,12 +17,12 @@ def main():
     while True:
         time.sleep(0.5)
 
-        full_path = f"{img_dir}youtube_skip.png"
-        ret = click_img(full_path)
+        full_paths = [f"{img_dir}youtube_skip.png", f"{img_dir}youtube_skip_poll.png"]
+        ret = click_imgs(full_paths)
         if not ret:
             continue
 
-        print(full_path)
+        print(full_paths)
 
 
 main()
