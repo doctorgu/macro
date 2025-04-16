@@ -30,7 +30,8 @@ def main():
         if not ret:
             continue
 
-        print(full_paths)
+        pyautogui.moveTo(0, 0)
+        print(ret)
 
 
 main()
