@@ -9,7 +9,7 @@ def get_location(img_full_path: str, conf=0.9) -> pyautogui.Point | None:
     try:
         location = pyautogui.locateCenterOnScreen(img_full_path, confidence=conf)
         return location
-    except pyautogui.ImageNotFoundException:
+    except (pyautogui.ImageNotFoundException, OSError):
         return None
 
 

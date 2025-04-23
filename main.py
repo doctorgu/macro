@@ -1,7 +1,8 @@
 """main"""
 
-import pyautogui
+from datetime import datetime
 import time
+import pyautogui
 
 from util import click_imgs
 
@@ -30,8 +31,8 @@ def main():
         if not ret:
             continue
 
-        pyautogui.moveTo(0, 0)
-        print(ret)
+        pyautogui.moveTo(640, 640)
+        print(datetime.now(), ret)
 
 
 main()
