@@ -1,9 +1,10 @@
 """util"""
 
 import pyautogui
+from pyscreeze import Point
 
 
-def get_location(img_full_path: str, conf=0.9) -> pyautogui.Point | None:
+def get_location(img_full_path: str, conf=0.9) -> Point | None:
     """True if image exists"""
 
     try:

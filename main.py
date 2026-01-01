@@ -37,4 +37,6 @@ def main():
 
 main()
 
+# py install 3.12
+# py -3.12 -m venv .venv
 # python main.py
