@@ -4,4 +4,4 @@ IF %ERRORLEVEL% NEQ 0 (
     ECHO Error in batch
     EXIT /B %ERRORLEVEL%
 )
-python main.py
+python coupang/ad_cancel.py

@@ -1,6 +1,8 @@
 """util"""
 
 import pyautogui
+import time
+import random
 from pyscreeze import Point
 
 
