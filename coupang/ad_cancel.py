@@ -1,5 +1,6 @@
 """cancel ad"""
 
+from util import move_mouse_parabolic
 from pyscreeze import Box
 import pyautogui
 import pyperclip
@@ -38,9 +39,10 @@ def human_click_element(image_name, confidence=0.85, region=None):
     Finds a target PNG screenshot on screen and performs a human click on it.
     """
     logging.debug(f"finding {image_name}...")
-    pos = locate_center(image_name, confidence, region)
+    pos = human_locate_center(image_name, confidence, region)
     if pos:
         logging.debug(f"found {image_name} at {pos}. Clicking...")
+        move_mouse_parabolic(x_to=pos[0], y_to=pos[1], height=100, duration=0.5)
         human_click(pos[0], pos[1])
         return True
 
@@ -78,13 +80,13 @@ def locate_image(
     return locate_unicode_image(image_path, confidence=confidence, region=region)
 
 
-def locate_center(image_name: str, confidence: float = 0.85, region: None = None):
+def human_locate_center(image_name: str, confidence: float = 0.85, region: None = None):
     """
-    Locates an image on screen and returns its center coordinates.
+    Locates an image on screen and returns its human-like coordinates.
     """
     box = locate_image(image_name, confidence, region)
     if box:
-        return pyautogui.center(box)
+        return pyautogui.center(box) + (random.randint(-5, 5), random.randint(-5, 5))
     return None
 
 
@@ -94,14 +96,14 @@ def do_for_popups():
     - if "확인" shows, click "확인"
     """
     # Check for "동의철회" button popup
-    btn_withdraw = locate_center("동의철회")
+    btn_withdraw = human_locate_center("동의철회")
     if btn_withdraw:
         logging.debug("🔔 Detected '동의철회' popup on screen! Clicking...")
         human_click(*btn_withdraw)
         time.sleep(1.0)
 
     # Check for "확인" button popup
-    btn_confirm = locate_center("확인")
+    btn_confirm = human_locate_center("확인")
     if btn_confirm:
         logging.debug("🔔 Detected '확인' popup on screen! Clicking...")
         human_click(*btn_confirm)
@@ -249,5 +251,4 @@ def main():
     logging.debug("done")
 
 
-if __name__ == "__main__":
-    main()
+main()
