@@ -1,5 +1,7 @@
 """cancel ad"""
 
+from datetime import datetime
+import traceback
 from util import move_mouse_parabolic
 from pyscreeze import Box
 import pyautogui
@@ -86,7 +88,11 @@ def human_locate_center(image_name: str, confidence: float = 0.85, region: None 
     """
     box = locate_image(image_name, confidence, region)
     if box:
-        return pyautogui.center(box) + (random.randint(-5, 5), random.randint(-5, 5))
+        x, y = pyautogui.center(box)
+        x += random.randint(-5, 5)
+        y += random.randint(-5, 5)
+        return (x, y)
+
     return None
 
 
@@ -186,69 +192,82 @@ def set_logger():
 
 
 def main():
-    set_logger()
+    try:
+        set_logger()
 
-    coupang_password = os.getenv("COUPANG_PASSWORD")
-    if not coupang_password:
-        raise ValueError("COUPANG_PASSWORD is not set in the .env file.")
+        coupang_password = os.getenv("COUPANG_PASSWORD")
+        if not coupang_password:
+            raise ValueError("COUPANG_PASSWORD is not set in the .env file.")
 
-    chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
-    if not os.path.exists(chrome_path):
-        raise FileNotFoundError(f"Google Chrome was not found at '{chrome_path}'")
+        chrome_path = r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+        if not os.path.exists(chrome_path):
+            raise FileNotFoundError(f"Google Chrome was not found at '{chrome_path}'")
 
-    # Open Chrome directly targeting coupang
-    subprocess.Popen([chrome_path, "https://www.coupang.com"])
+        # Open Chrome directly targeting coupang
+        subprocess.Popen([chrome_path, "https://www.coupang.com"])
 
-    if not wait_for_image("로그아웃", timeout=3):
-        login_from_main_page()
+        if not wait_for_image("로그아웃", timeout=3):
+            login_from_main_page()
 
-    if not wait_for_all_images(["로그아웃", "마이쿠팡"], timeout=3):
-        raise RuntimeError("Could not find '로그아웃' or '마이쿠팡' icon.")
-    human_click_element("마이쿠팡")
+        if not wait_for_all_images(["로그아웃", "마이쿠팡"], timeout=3):
+            raise RuntimeError("Could not find '로그아웃' or '마이쿠팡' icon.")
+        human_click_element("마이쿠팡")
 
-    if not wait_for_image("개인정보확인수정", timeout=3):
-        raise RuntimeError("Could not find '개인정보확인수정' icon.")
-    human_click_element("개인정보확인수정")
+        if not wait_for_image("개인정보확인수정", timeout=3):
+            raise RuntimeError("Could not find '개인정보확인수정' icon.")
+        human_click_element("개인정보확인수정")
 
-    if wait_for_all_images(["인증방법선택", "비밀번호_링크"], timeout=3):
-        human_click_element("비밀번호_링크")
+        if wait_for_all_images(["인증방법선택", "비밀번호_링크"], timeout=3):
+            human_click_element("비밀번호_링크")
 
-        if not wait_for_all_images(["비밀번호입력", "비밀번호_입력"], timeout=3):
-            raise RuntimeError("Could not find '비밀번호입력' or '비밀번호_입력' icon.")
+            if not wait_for_all_images(["비밀번호입력", "비밀번호_입력"], timeout=3):
+                raise RuntimeError(
+                    "Could not find '비밀번호입력' or '비밀번호_입력' icon."
+                )
 
-        human_click_element("비밀번호_입력")
-        paste_text(coupang_password)
-        human_click_element("계속하기")
+            human_click_element("비밀번호_입력")
+            paste_text(coupang_password)
+            human_click_element("계속하기")
 
-    if not wait_for_image("회원정보수정", timeout=3):
-        raise RuntimeError("Could not find '회원정보수정' icon.")
+        if not wait_for_image("회원정보수정", timeout=3):
+            raise RuntimeError("Could not find '회원정보수정' icon.")
 
-    text1_box = locate_image("마케팅목적의개인정보수집및이용동의함")
-    if text1_box:
-        left, top, width, height = text1_box
-        # Scan in a local bounding box to its left
-        region1 = (int(left - 75), int(top - 10), 80, int(height + 20))
-        checked1 = locate_image("체크됨", region=region1)
-        if checked1:
-            cx, cy = pyautogui.center(checked1)
-            human_click(cx, cy)
-            time.sleep(1.0)
-            do_for_popups()
+        text1_box = locate_image("마케팅목적의개인정보수집및이용동의함")
+        if text1_box:
+            left, top, width, height = text1_box
+            # Scan in a local bounding box to its left
+            region1 = (int(left - 75), int(top - 10), 80, int(height + 20))
+            checked1 = locate_image("체크됨", region=region1)
+            if checked1:
+                cx, cy = pyautogui.center(checked1)
+                human_click(cx, cy)
+                time.sleep(1.0)
+                do_for_popups()
 
-    text2_box = locate_image("광고성정보수신동의함")
-    if text2_box:
-        left, top, width, height = text2_box
-        region2 = (int(left - 75), int(top - 10), 80, int(height + 20))
-        checked2 = locate_image("체크됨", region=region2)
-        if checked2:
-            cx, cy = pyautogui.center(checked2)
-            human_click(cx, cy)
-            time.sleep(1.0)
-            do_for_popups()
+        text2_box = locate_image("광고성정보수신동의함")
+        if text2_box:
+            left, top, width, height = text2_box
+            region2 = (int(left - 75), int(top - 10), 80, int(height + 20))
+            checked2 = locate_image("체크됨", region=region2)
+            if checked2:
+                cx, cy = pyautogui.center(checked2)
+                human_click(cx, cy)
+                time.sleep(1.0)
+                do_for_popups()
 
-    pyautogui.hotkey("ctrl", "w")
-    time.sleep(1.0)
-    logging.debug("done")
+        pyautogui.hotkey("ctrl", "w")
+        time.sleep(1.0)
+        logging.debug("done")
+    except Exception as exc:
+        screenshot = pyautogui.screenshot()
+        screenshot.save(
+            os.path.join(
+                os.path.dirname(__file__),
+                f"ad_cancel_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png",
+            )
+        )
+        logging.error(traceback.format_exception(type(exc), exc, exc.__traceback__))
+        raise
 
 
 main()
