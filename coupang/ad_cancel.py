@@ -44,7 +44,7 @@ def human_click_element(image_name, confidence=0.85, region=None):
     pos = human_locate_center(image_name, confidence, region)
     if pos:
         logging.debug(f"found {image_name} at {pos}. Clicking...")
-        move_mouse_parabolic(x_to=pos[0], y_to=pos[1], height=100, duration=0.5)
+        # move_mouse_parabolic(x_to=pos[0], y_to=pos[1], height=100, duration=0.5)
         human_click(pos[0], pos[1])
         return True
 
@@ -217,8 +217,8 @@ def main():
             raise RuntimeError("Could not find '개인정보확인수정' icon.")
         human_click_element("개인정보확인수정")
 
-        if wait_for_all_images(["인증방법선택", "비밀번호_링크"], timeout=3):
-            human_click_element("비밀번호_링크")
+        if wait_for_all_images(["인증방법선택", "비밀번호확인_링크"], timeout=3):
+            human_click_element("비밀번호확인_링크")
 
             if not wait_for_all_images(["비밀번호입력", "비밀번호_입력"], timeout=3):
                 raise RuntimeError(
